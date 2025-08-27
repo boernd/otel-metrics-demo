@@ -1,3 +1,4 @@
+import os
 import random
 import time
 from flask import Flask, jsonify
@@ -5,17 +6,18 @@ from flask import Flask, jsonify
 from opentelemetry import metrics
 from opentelemetry.sdk.metrics import MeterProvider
 from opentelemetry.sdk.metrics.export import PeriodicExportingMetricReader
-from opentelemetry.exporter.otlp.proto.grpc.metric_exporter import OTLPMetricExporter
+# from opentelemetry.exporter.otlp.proto.grpc.metric_exporter import OTLPMetricExporter
+from opentelemetry.exporter.otlp.proto.http.metric_exporter import OTLPMetricExporter
 from opentelemetry.sdk.resources import SERVICE_NAME, SERVICE_NAMESPACE, SERVICE_VERSION, Resource
 
 # Service name is required for most backends
 resource = Resource(attributes={
-    SERVICE_NAME: "otel",
-    SERVICE_NAMESPACE: "demo",
-    SERVICE_VERSION: "1.0.0"
+    SERVICE_NAME: 'otel',
+    SERVICE_NAMESPACE: 'demo',
+    SERVICE_VERSION: '1.0.0'
 })
 
-COLLECTOR_ENDPOINT = "http://xyz:4317"
+COLLECTOR_ENDPOINT =  os.environ.get('COLLECTOR_ENDPOINT', 'http://localhost:4318/v1/metrics')
 INTERVAL_SEC = 10
 
 # Boiler plate initialization
